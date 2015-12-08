@@ -1,8 +1,11 @@
 package br.com.caelum.cadastro;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,16 +45,6 @@ public class ListaAlunosActivity extends ActionBarActivity {
             }
         });
 
-        listaAlunos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String aluno = (String) parent.getItemAtPosition(position);
-                Toast.makeText(ListaAlunosActivity.this, "Clique Longo: " + aluno, Toast.LENGTH_LONG).show();
-
-                return false;
-            }
-        });
-
         botaoAdiciona.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +52,8 @@ public class ListaAlunosActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        registerForContextMenu(listaAlunos);
     }
 
     @Override
@@ -87,6 +82,39 @@ public class ListaAlunosActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        final Aluno alunoSelecionado = (Aluno) listaAlunos.getAdapter().getItem(info.position);
+
+        menu.add("Ligar");
+        menu.add("Enviar SMS");
+        menu.add("Achar no Mapa");
+        menu.add("Navegar no Site");
+
+        MenuItem deletar = menu.add("Deletar");
+        deletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                new AlertDialog.Builder(ListaAlunosActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Deletar")
+                        .setMessage("Deseja mesmo deletar?")
+                        .setPositiveButton("Quero",
+                                new DialogInterface.OnClickListener() {
+                    public void onClick (DialogInterface dialog,
+                        int which){
+                            AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
+                            dao.deleta(alunoSelecionado);
+                            dao.close();
+                            carregaLista();
+                        }
+                }).setNegativeButton("Não", null).show();
+                            return true;
+            }
+        });
     }
 
     private void carregaLista(){

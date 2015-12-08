@@ -58,23 +58,34 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     public List<Aluno> getLista(){
         List<Aluno> alunos = new ArrayList<Aluno>();
-        Cursor c = getReadableDatabase().rawQuery("SELECT * FROM " + TABELA + ";", null);
+        Cursor c = null;
+        try {
+            c = getReadableDatabase().rawQuery("SELECT * FROM " + TABELA + ";", null);
 
-        while (c.moveToNext()){
-            Aluno aluno = new Aluno();
+            while (c.moveToNext()) {
+                Aluno aluno = new Aluno();
 
-            aluno.setId(c.getLong(c.getColumnIndex("id")));
-            aluno.setNome(c.getString(c.getColumnIndex("nome")));
-            aluno.setTelefone(c.getString(c.getColumnIndex("telefone")));
-            aluno.setEndereco(c.getString(c.getColumnIndex("endereco")));
-            aluno.setSite(c.getString(c.getColumnIndex("site")));
-            aluno.setNota(c.getDouble(c.getColumnIndex("nota")));
+                aluno.setId(c.getLong(c.getColumnIndex("id")));
+                aluno.setNome(c.getString(c.getColumnIndex("nome")));
+                aluno.setTelefone(c.getString(c.getColumnIndex("telefone")));
+                aluno.setEndereco(c.getString(c.getColumnIndex("endereco")));
+                aluno.setSite(c.getString(c.getColumnIndex("site")));
+                aluno.setNota(c.getDouble(c.getColumnIndex("nota")));
 
-            alunos.add(aluno);
+                alunos.add(aluno);
 
+            }
+
+
+        }finally {
+            c.close();
         }
-
-        c.close();
         return alunos;
+    }
+
+    public void deleta(Aluno alunoSelecionado) {
+        String[] id = {alunoSelecionado.getId().toString()};
+
+        getWritableDatabase().delete(TABELA, "id=?", id);
     }
 }
