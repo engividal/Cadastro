@@ -1,10 +1,13 @@
 package br.com.caelum.cadastro;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.io.Serializable;
 
 import br.com.caelum.cadastro.dao.AlunoDAO;
 import br.com.caelum.cadastro.helper.FormularioHelper;
@@ -15,12 +18,20 @@ public class FormularioActivity extends ActionBarActivity {
 
     private FormularioHelper helper;
 
+    public static final String ALUNO_SELECIONADO = "alunoSelecionado";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario);
 
         this.helper = new FormularioHelper(this);
+        Intent intent = this.getIntent();
+
+        if(intent.hasExtra(ALUNO_SELECIONADO)) {
+            Aluno aluno = (Aluno) intent.getSerializableExtra(ALUNO_SELECIONADO);
+            this.helper.colocaNoFormulario(aluno);
+        }
 
     }
 
@@ -42,9 +53,13 @@ public class FormularioActivity extends ActionBarActivity {
                 if(helper.temNome()) {
                     Aluno aluno = this.helper.pegaAlunoDoFormulario();
                     AlunoDAO dao = new AlunoDAO(this);
-                    dao.insere(aluno);
+
+                    if (aluno.getId() == null){
+                        dao.insere(aluno);
+                    }else {
+                        dao.altera(aluno);
+                    }
                     dao.close();
-                    //Toast.makeText(this, "Aluno: " + this.helper.pegaAlunoDoFormulario().getNome(), Toast.LENGTH_LONG).show();
                     finish();
                 }else{
                     helper.mostraErro();

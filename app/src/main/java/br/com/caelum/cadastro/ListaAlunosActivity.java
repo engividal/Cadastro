@@ -31,17 +31,13 @@ public class ListaAlunosActivity extends ActionBarActivity {
 
         Button botaoAdiciona = (Button) findViewById(R.id.lista_alunos_floating_button);
 
-       /* String[] alunos = {"Ismael", "Jucimar", "Raimundo", "Matheus"};
-        this.listaAlunos = (ListView) findViewById(R.id.lista_alunos);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alunos);
-
-        listaAlunos.setAdapter(adapter);*/
-
         listaAlunos = (ListView) findViewById(R.id.lista_alunos);
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(ListaAlunosActivity.this, "Posição selecionada: " + position, Toast.LENGTH_SHORT).show();
+                Intent edicao = new Intent( ListaAlunosActivity.this, FormularioActivity.class );
+                edicao.putExtra("alunoSelecionado", (Aluno) listaAlunos.getItemAtPosition(position));
+                startActivity(edicao);
             }
         });
 

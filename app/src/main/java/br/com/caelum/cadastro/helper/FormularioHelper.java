@@ -31,6 +31,7 @@ public class FormularioHelper {
 
     public Aluno pegaAlunoDoFormulario(){
        aluno.setNome(nome.getText().toString());
+        aluno.setTelefone(nome.getText().toString());
         aluno.setEndereco(endereco.getText().toString());
         aluno.setSite(site.getText().toString());
         aluno.setNota(Double.valueOf(nota.getProgress()));
@@ -44,5 +45,16 @@ public class FormularioHelper {
 
     public void mostraErro(){
         nome.setError("Campo nome não pode ser vazio");
+    }
+
+    public void colocaNoFormulario(Aluno aluno){
+        nome.setText(aluno.getNome());
+        endereco.setText(aluno.getEndereco());
+        site.setText(aluno.getSite());
+        telefone.setText(aluno.getTelefone());
+        nota.setProgress(aluno.getNota().intValue());
+
+        this.aluno = aluno;
+
     }
 }
