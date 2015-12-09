@@ -1,12 +1,18 @@
 package br.com.caelum.cadastro;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.Serializable;
 
 import br.com.caelum.cadastro.dao.AlunoDAO;
@@ -16,9 +22,11 @@ import br.com.caelum.cadastro.modelo.Aluno;
 
 public class FormularioActivity extends ActionBarActivity {
 
+    public static final String ALUNO_SELECIONADO = "alunoSelecionado";
+    public static final int TIRA_FOTO = 123;
     private FormularioHelper helper;
 
-    public static final String ALUNO_SELECIONADO = "alunoSelecionado";
+   private String localArquivoFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +40,19 @@ public class FormularioActivity extends ActionBarActivity {
             Aluno aluno = (Aluno) intent.getSerializableExtra(ALUNO_SELECIONADO);
             this.helper.colocaNoFormulario(aluno);
         }
+
+        Button foto = helper.getFotoButton();
+        foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent irParaCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                localArquivoFoto = getExternalFilesDir(null) + "/" + System.currentTimeMillis() + ".jpg";
+                Uri localFoto = Uri.fromFile(new File(localArquivoFoto));
+                irParaCamera.putExtra(MediaStore.EXTRA_OUTPUT, localFoto);
+                startActivityForResult(irParaCamera, TIRA_FOTO);
+            }
+        });
 
     }
 
@@ -68,6 +89,18 @@ public class FormularioActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == TIRA_FOTO){
+            if (resultCode == Activity.RESULT_OK){
+                helper.carregaImagem(this.localArquivoFoto);
+            }else {
+                this.localArquivoFoto = null;
+            }
         }
     }
 }

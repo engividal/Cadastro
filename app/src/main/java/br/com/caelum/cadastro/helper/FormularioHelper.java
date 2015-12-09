@@ -1,6 +1,10 @@
 package br.com.caelum.cadastro.helper;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 
 import br.com.caelum.cadastro.FormularioActivity;
@@ -18,6 +22,8 @@ public class FormularioHelper {
     private EditText site;
     private RatingBar nota;
     private EditText endereco;
+    private ImageView foto;
+    private Button fotoButton;
 
     public FormularioHelper(FormularioActivity activity) {
         this.aluno = new Aluno();
@@ -27,6 +33,13 @@ public class FormularioHelper {
         this.site = (EditText) activity.findViewById(R.id.formulario_site);
         this.nota = (RatingBar) activity.findViewById(R.id.formulario_nota);
         this.endereco = (EditText) activity.findViewById(R.id.formulario_endereco);
+        this.foto = (ImageView) activity.findViewById(R.id.formulario_foto);
+        this.fotoButton = (Button) activity.findViewById(R.id.formulario_foto_button);
+
+    }
+
+    public Button getFotoButton(){
+        return fotoButton;
     }
 
     public Aluno pegaAlunoDoFormulario(){
@@ -35,7 +48,7 @@ public class FormularioHelper {
         aluno.setEndereco(endereco.getText().toString());
         aluno.setSite(site.getText().toString());
         aluno.setNota(Double.valueOf(nota.getProgress()));
-
+        aluno.setCaminhoFoto((String) foto.getTag());
         return aluno;
     }
 
@@ -54,7 +67,19 @@ public class FormularioHelper {
         telefone.setText(aluno.getTelefone());
         nota.setProgress(aluno.getNota().intValue());
 
+        if(aluno.getCaminhoFoto() != null){
+            this.carregaImagem(aluno.getCaminhoFoto());
+        }
         this.aluno = aluno;
 
+    }
+
+    public void carregaImagem(String localArquivoFoto){
+        Bitmap imagemFoto = BitmapFactory.decodeFile(localArquivoFoto);
+        Bitmap imagemFotoReduzida = Bitmap.createScaledBitmap(
+                imagemFoto, imagemFoto.getWidth(), 300, true);
+        foto.setImageBitmap(imagemFotoReduzida);
+        foto.setTag(localArquivoFoto);
+        foto.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 }
