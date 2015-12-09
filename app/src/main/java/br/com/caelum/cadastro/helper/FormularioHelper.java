@@ -44,7 +44,7 @@ public class FormularioHelper {
 
     public Aluno pegaAlunoDoFormulario(){
        aluno.setNome(nome.getText().toString());
-        aluno.setTelefone(nome.getText().toString());
+        aluno.setTelefone(telefone.getText().toString());
         aluno.setEndereco(endereco.getText().toString());
         aluno.setSite(site.getText().toString());
         aluno.setNota(Double.valueOf(nota.getProgress()));
