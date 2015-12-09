@@ -3,6 +3,7 @@ package br.com.caelum.cadastro;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -85,10 +86,30 @@ public class ListaAlunosActivity extends ActionBarActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         final Aluno alunoSelecionado = (Aluno) listaAlunos.getAdapter().getItem(info.position);
 
-        menu.add("Ligar");
-        menu.add("Enviar SMS");
-        menu.add("Achar no Mapa");
-        menu.add("Navegar no Site");
+        MenuItem ligar = menu.add("Ligar");
+        Intent intentLigar = new Intent(Intent.ACTION_CALL);
+        intentLigar.setData(Uri.parse("tel:" + alunoSelecionado.getTelefone()));
+        ligar.setIntent(intentLigar);
+
+        MenuItem sms = menu.add("Enviar SMS");
+        Intent intentSMS = new Intent(Intent.ACTION_VIEW);
+        intentSMS.setData(Uri.parse("sms:" + alunoSelecionado.getTelefone()));
+        intentSMS.putExtra("sms_body", "um pedaço da mensagem ");
+        sms.setIntent(intentSMS);
+
+        MenuItem mapa = menu.add("Achar no Mapa");
+        Intent intentMapa = new Intent(Intent.ACTION_VIEW);
+        intentMapa.setData(Uri.parse("geo:0,0?z=14&q=" + alunoSelecionado.getEndereco()));
+        mapa.setIntent(intentMapa);
+
+        MenuItem site = menu.add("Navegar no Site");
+        Intent intentSite = new Intent(Intent.ACTION_VIEW);
+        String endereco = alunoSelecionado.getSite();
+        if (!endereco.startsWith("http://")){
+            endereco = "http://" + endereco;
+        }
+        intentSite.setData(Uri.parse(endereco));
+        site.setIntent(intentSite);
 
         MenuItem deletar = menu.add("Deletar");
         deletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -111,6 +132,7 @@ public class ListaAlunosActivity extends ActionBarActivity {
                             return true;
             }
         });
+
     }
 
     private void carregaLista(){
