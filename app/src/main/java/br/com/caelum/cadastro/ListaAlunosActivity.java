@@ -23,6 +23,7 @@ import br.com.caelum.cadastro.converter.AlunoConverter;
 import br.com.caelum.cadastro.dao.AlunoDAO;
 import br.com.caelum.cadastro.modelo.Aluno;
 import br.com.caelum.cadastro.support.WebClient;
+import br.com.caelum.cadastro.task.EnviaAlunosTask;
 
 
 public class ListaAlunosActivity extends ActionBarActivity {
@@ -76,12 +77,7 @@ public class ListaAlunosActivity extends ActionBarActivity {
        switch (item.getItemId()) {
 
            case R.id.menu_enviar_notas: {
-               AlunoDAO dao = new AlunoDAO(this);
-               alunos = dao.getLista();
-               String json = new AlunoConverter().toJson(alunos);
-               WebClient client = new WebClient();
-               String resposta = client.post(json);
-               Toast.makeText(this, resposta, Toast.LENGTH_LONG).show();
+               new EnviaAlunosTask(this).execute();
                return true;
            }
        }
