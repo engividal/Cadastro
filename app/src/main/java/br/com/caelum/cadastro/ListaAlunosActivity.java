@@ -41,7 +41,7 @@ public class ListaAlunosActivity extends ActionBarActivity {
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent edicao = new Intent( ListaAlunosActivity.this, FormularioActivity.class );
+                Intent edicao = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
                 edicao.putExtra("alunoSelecionado", (Aluno) listaAlunos.getItemAtPosition(position));
                 startActivity(edicao);
             }
@@ -74,13 +74,16 @@ public class ListaAlunosActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-       switch (item.getItemId()) {
-
-           case R.id.menu_enviar_notas: {
-               new EnviaAlunosTask(this).execute();
-               return true;
-           }
-       }
+        switch (item.getItemId()) {
+            case R.id.menu_enviar_notas: {
+                new EnviaAlunosTask(this).execute();
+                return true;
+            }
+            case R.id.menu_receber_provas:
+                Intent provas = new Intent(this, ProvasActivity.class);
+                startActivity(provas);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -108,7 +111,7 @@ public class ListaAlunosActivity extends ActionBarActivity {
         MenuItem site = menu.add("Navegar no Site");
         Intent intentSite = new Intent(Intent.ACTION_VIEW);
         String endereco = alunoSelecionado.getSite();
-        if (!endereco.startsWith("http://")){
+        if (!endereco.startsWith("http://")) {
             endereco = "http://" + endereco;
         }
         intentSite.setData(Uri.parse(endereco));
@@ -124,21 +127,21 @@ public class ListaAlunosActivity extends ActionBarActivity {
                         .setMessage("Deseja mesmo deletar?")
                         .setPositiveButton("Quero",
                                 new DialogInterface.OnClickListener() {
-                    public void onClick (DialogInterface dialog,
-                        int which){
-                            AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
-                            dao.deleta(alunoSelecionado);
-                            dao.close();
-                            carregaLista();
-                        }
-                }).setNegativeButton("Não", null).show();
-                            return true;
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
+                                        dao.deleta(alunoSelecionado);
+                                        dao.close();
+                                        carregaLista();
+                                    }
+                                }).setNegativeButton("Não", null).show();
+                return true;
             }
         });
 
     }
 
-    private void carregaLista(){
+    private void carregaLista() {
         AlunoDAO dao = new AlunoDAO(this);
         alunos = dao.getLista();
         dao.close();
