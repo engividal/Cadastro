@@ -19,12 +19,15 @@ import android.widget.Toast;
 import java.util.List;
 
 import br.com.caelum.cadastro.adapter.ListaAlunosAdapter;
+import br.com.caelum.cadastro.converter.AlunoConverter;
 import br.com.caelum.cadastro.dao.AlunoDAO;
 import br.com.caelum.cadastro.modelo.Aluno;
+import br.com.caelum.cadastro.support.WebClient;
 
 
 public class ListaAlunosActivity extends ActionBarActivity {
     private ListView listaAlunos;
+    private List<Aluno> alunos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +72,19 @@ public class ListaAlunosActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+       switch (item.getItemId()) {
 
+           case R.id.menu_enviar_notas: {
+               AlunoDAO dao = new AlunoDAO(this);
+               alunos = dao.getLista();
+               String json = new AlunoConverter().toJson(alunos);
+               WebClient client = new WebClient();
+               String resposta = client.post(json);
+               Toast.makeText(this, resposta, Toast.LENGTH_LONG).show();
+               return true;
+           }
+       }
         return super.onOptionsItemSelected(item);
     }
 
@@ -138,7 +144,7 @@ public class ListaAlunosActivity extends ActionBarActivity {
 
     private void carregaLista(){
         AlunoDAO dao = new AlunoDAO(this);
-        List<Aluno> alunos = dao.getLista();
+        alunos = dao.getLista();
         dao.close();
 
         ListaAlunosAdapter adapter = new ListaAlunosAdapter(this, alunos);
