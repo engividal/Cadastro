@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import br.com.caelum.cadastro.fragment.DetalhesProvaFragment;
 import br.com.caelum.cadastro.fragment.ListaProvasFragment;
 
 
@@ -17,7 +18,15 @@ public class ProvasActivity extends ActionBarActivity {
         setContentView(R.layout.activity_provas);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.provas_view, new ListaProvasFragment());
+
+        if (isTablet()){
+            transaction
+                    .replace(R.id.provas_lista, new ListaProvasFragment())
+                    .replace(R.id.provas_detalhes, new DetalhesProvaFragment());
+        }else {
+            transaction.replace(R.id.provas_view, new ListaProvasFragment());
+        }
+
         transaction.commit();
     }
 
@@ -42,5 +51,9 @@ public class ProvasActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isTablet(){
+        return getResources().getBoolean(R.bool.isTablet);
     }
 }
