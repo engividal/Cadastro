@@ -15,6 +15,7 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.List;
 
+import br.com.caelum.cadastro.ProvasActivity;
 import br.com.caelum.cadastro.R;
 import br.com.caelum.cadastro.modelo.Prova;
 
@@ -36,7 +37,7 @@ public class ListaProvasFragment extends Fragment {
                 "Álgebra Linear", "Cálculo", "Estatística"
         ));
         Prova prova2 = new Prova("20/06/2015", "Português");
-        prova1.setTopicos(Arrays.asList(
+        prova2.setTopicos(Arrays.asList(
                 "Complemento Nominal", "Orações subordinadas", "Análise Sintática"
         ));
         List<Prova> provas = Arrays.asList(prova1, prova2);
@@ -50,7 +51,8 @@ public class ListaProvasFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Prova selecionada = (Prova) parent.getItemAtPosition(position);
 
-                Toast.makeText(getActivity(), "Prova Selecionada: " + selecionada, Toast.LENGTH_LONG).show();
+                ProvasActivity calendarioProvas = (ProvasActivity) getActivity();
+                calendarioProvas.selecionaProva(selecionada);
             }
         });
         return layoutProvas;
