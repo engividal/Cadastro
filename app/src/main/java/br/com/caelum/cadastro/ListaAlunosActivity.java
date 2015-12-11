@@ -79,10 +79,16 @@ public class ListaAlunosActivity extends ActionBarActivity {
                 new EnviaAlunosTask(this).execute();
                 return true;
             }
-            case R.id.menu_receber_provas:
+            case R.id.menu_receber_provas: {
                 Intent provas = new Intent(this, ProvasActivity.class);
                 startActivity(provas);
                 return true;
+            }
+            case  R.id.menu_mapa: {
+                Intent mapa = new Intent(this, MostraAlunosActivity.class);
+                startActivity(mapa);
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
