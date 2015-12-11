@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.com.caelum.cadastro.dao.AlunoDAO;
 import br.com.caelum.cadastro.modelo.Aluno;
+import br.com.caelum.cadastro.util.AtualizadorDeLocalizacao;
 import br.com.caelum.cadastro.util.Localizador;
 
 /**
@@ -20,29 +21,27 @@ import br.com.caelum.cadastro.util.Localizador;
  */
 public class MapaFragment extends SupportMapFragment {
 
+    private GoogleMap map;
+
     @Override
     public void onResume() {
         super.onResume();
-
+        map = getMap();
         Localizador localizador = new Localizador(getActivity());
-        LatLng local = localizador.getCoordenada("Rua Vergueiro 3185 Vila Mariana");
 
-        Log.i("MAPA", "Coordenadas da Caelum: " + local);
-
-        this.centralizaNo(local);
+        new AtualizadorDeLocalizacao(getActivity(), this);
 
         AlunoDAO dao = new AlunoDAO(getActivity());
         List<Aluno> alunos = dao.getLista();
         for(Aluno aluno:alunos){
             LatLng coordenada = localizador.getCoordenada(aluno.getEndereco());
             MarkerOptions marcador = new MarkerOptions().position(coordenada).title(aluno.getNome()).snippet(aluno.getEndereco());
-            getMap().addMarker(marcador);
+            map.addMarker(marcador);
         }
     }
 
-    private void centralizaNo(LatLng local) {
-        GoogleMap mapa = getMap();
-
-        mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 11));
+    public void centralizaNo(LatLng local) {
+           map.addMarker(new MarkerOptions().position(local));
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 11));
     }
 }
